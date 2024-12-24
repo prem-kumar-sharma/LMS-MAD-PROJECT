@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Available Courses - LMS{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>Available Courses</h2>
+    </div>
+    <div class="col-md-4">
+        <form class="d-flex" method="GET">
+            <input class="form-control me-2" type="search" placeholder="Search courses..." name="search" value="{{ request.args.get('search', '') }}">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<!-- Category Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('course_list') }}" class="btn btn-outline-primary {% if not request.args.get('category') %}active{% endif %}">All</a>
+            <a href="{{ url_for('course_list', category='Programming') }}" class="btn btn-outline-primary {% if request.args.get('category') == 'Programming' %}active{% endif %}">Programming</a>
+            <a href="{{ url_for('course_list', category='Design') }}" class="btn btn-outline-primary {% if request.args.get('category') == 'Design' %}active{% endif %}">Design</a>
+            <a href="{{ url_for('course_list', category='Business') }}" class="btn btn-outline-primary {% if request.args.get('category') == 'Business' %}active{% endif %}">Business</a>
+            <a href="{{ url_for('course_list', category='Marketing') }}" class="btn btn-outline-primary {% if request.args.get('category') == 'Marketing' %}active{% endif %}">Marketing</a>
+        </div>
+    </div>
+</div>
+
+<!-- Course List -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ course.name }}</h5>
+                <p class="card-text text-muted">
+                    <small>
+                        <i class="bi bi-clock"></i> {{ course.duration }}
+                        | <i class="bi bi-tag"></i> {{ course.category }}
+                    </small>
+                </p>
+                <p class="card-text">{{ course.description[:150] }}{% if course.description|length > 150 %}...{% endif %}</p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge {% if course.enrollment_status == 'Open' %}bg-success{% else %}bg-warning{% endif %}">
+                        {{ course.enrollment_status }}
+                    </span>
+                    <a href="{{ url_for('course_view', course_id=course.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No courses found. Please try a different search or category.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

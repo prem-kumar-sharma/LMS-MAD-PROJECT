@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Create Course - LMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Create New Course</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_create_course') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Course Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="duration" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="duration" name="duration" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Programming">Programming</option>
+                                <option value="Design">Design</option>
+                                <option value="Business">Business</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="enrollment_status" class="form-label">Enrollment Status</label>
+                        <select class="form-select" id="enrollment_status" name="enrollment_status" required>
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Coming Soon">Coming Soon</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="create_batch" name="create_batch">
+                            <label class="form-check-label" for="create_batch">
+                                Create Initial Batch
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="batchDetails" style="display: none;">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Show/hide batch details based on checkbox
+    document.getElementById('create_batch').addEventListener('change', function() {
+        document.getElementById('batchDetails').style.display = this.checked ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

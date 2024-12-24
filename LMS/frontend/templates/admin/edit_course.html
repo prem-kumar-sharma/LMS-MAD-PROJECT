@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Course - {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Edit Course: {{ course.name }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_edit_course', course_id=course.id) }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Course Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ course.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required>{{ course.description }}</textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="duration" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="duration" name="duration" value="{{ course.duration }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Programming" {% if course.category == 'Programming' %}selected{% endif %}>Programming</option>
+                                <option value="Design" {% if course.category == 'Design' %}selected{% endif %}>Design</option>
+                                <option value="Business" {% if course.category == 'Business' %}selected{% endif %}>Business</option>
+                                <option value="Marketing" {% if course.category == 'Marketing' %}selected{% endif %}>Marketing</option>
+                                <option value="Other" {% if course.category == 'Other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="enrollment_status" class="form-label">Enrollment Status</label>
+                        <select class="form-select" id="enrollment_status" name="enrollment_status" required>
+                            <option value="Open" {% if course.enrollment_status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="Closed" {% if course.enrollment_status == 'Closed' %}selected{% endif %}>Closed</option>
+                            <option value="Coming Soon" {% if course.enrollment_status == 'Coming Soon' %}selected{% endif %}>Coming Soon</option>
+                        </select>
+                    </div>
+
+                    <!-- Course Resources Section -->
+                    <div class="mb-4">
+                        <h5>Current Resources</h5>
+                        {% if course.resources %}
+                        <div class="list-group mb-3">
+                            {% for resource in course.resources %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ resource.name }}</strong>
+                                    <span class="badge bg-primary ms-2">{{ resource.type }}</span>
+                                </div>
+                                <form action="{{ url_for('admin_delete_resource', resource_id=resource.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                            onclick="return confirm('Are you sure you want to delete this resource?')">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted">No resources added yet.</p>
+                        {% endif %}
+
+                        <!-- Add New Resource Form -->
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6>Add New Resource</h6>
+                                <form action="{{ url_for('admin_add_resource', course_id=course.id) }}" method="POST" enctype="multipart/form-data">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="name" placeholder="Resource Name" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="type" required>
+                                                <option value="">Resource Type</option>
+                                                <option value="pdf">PDF</option>
+                                                <option value="video">Video</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="file" class="form-control" name="file" required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-primary w-100">Add</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                        <div>
+                            <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteCourseModal">
+                                Delete Course
+                            </button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Course Confirmation Modal -->
+<div class="modal fade" id="deleteCourseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong>{{ course.name }}</strong>? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('admin_delete_course', course_id=course.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Course</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add form validation or any other JavaScript functionality here
+document.addEventListener('DOMContentLoaded', function() {
+    // Example: Preview file name when selected
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                // You could display the filename somewhere if needed
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

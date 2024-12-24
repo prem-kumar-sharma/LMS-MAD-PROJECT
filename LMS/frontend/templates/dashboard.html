@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard - LMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Welcome, {{ current_user.username }}!</h2>
+
+<!-- My Courses Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="mb-0">My Enrolled Courses</h4>
+    </div>
+    <div class="card-body">
+        {% if enrollments %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Batch</th>
+                        <th>Enrollment Date</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                        <td>{{ enrollment.course.name }}</td>
+                        <td>{{ enrollment.batch.name }}</td>
+                        <td>{{ enrollment.enrollment_date.strftime('%B %d, %Y') }}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ enrollment.progress }}%"
+                                     aria-valuenow="{{ enrollment.progress }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ enrollment.progress }}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if enrollment.progress == 100 %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif enrollment.progress > 0 %}
+                                <span class="badge bg-primary">In Progress</span>
+                            {% else %}
+                                <span class="badge bg-warning">Not Started</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('course_view', course_id=enrollment.course.id) }}" 
+                               class="btn btn-sm btn-primary">
+                                View Course
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">You haven't enrolled in any courses yet.</p>
+        </div>
+        <a href="{{ url_for('course_list') }}" class="btn btn-primary">Browse Courses</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recommended Courses -->
+{% if recommended_courses %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">Recommended Courses</h4>
+    </div>
+    <div class="card-body">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for course in recommended_courses %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.name }}</h5>
+                        <p class="card-text">{{ course.description[:100] }}...</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Duration: {{ course.duration }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ url_for('course_view', course_id=course.id) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
