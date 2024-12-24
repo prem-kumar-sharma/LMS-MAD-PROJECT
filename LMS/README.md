@@ -1,4 +1,16 @@
 # LMS-MAD_PROJECT
+![image](https://github.com/user-attachments/assets/67b20998-4c23-4aaa-a2ba-c57ed44220f3)
+
+![image](https://github.com/user-attachments/assets/8bf66f69-f683-461a-96a4-e530d301e87a)
+
+![image](https://github.com/user-attachments/assets/79b76c54-46df-4b2d-b3ca-1105e8b1e795)
+
+![image](https://github.com/user-attachments/assets/ca1de96f-8802-47df-8c2e-95813576d28b)
+
+![image](https://github.com/user-attachments/assets/be3dbb75-29b1-425b-98ce-3dd9eab73f87)
+
+
+
 
 ## Overview
 This project is a Learning Management System designed to streamline the management and delivery of educational content. The LMS includes functionalities for course creation, user authentication, and course browsing, with a focus on simplicity and modularity.
